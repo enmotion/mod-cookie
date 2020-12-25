@@ -14,71 +14,53 @@ npm install --save mod-cookie
 #### Usage
 ES6 import for typical API call signing use case :
 ```
-import ModCrypto from "mod-crypto"
+import ModCookie from "../src"
 
-/* enCrypto & deCrypto String with CryptoKey
-*  CryptoKey expect String 16length,only number or letter characters
-*  if you typing wrong value of CryptoKey ,crypto won't be working
-*/
-let AC1=new ModCrypto('SDRd!@#Areqd1234');
-var beforStr = AC1.enCryptoStr("hello world!");
-var afterStr = AC1.deCryptoStr(beforStr)
-console.log(beforStr,afterStr);// "hello world!","hello world!"
+var name = "mod";
+var age = 18;
+var hoppy = ['a','b','c'];
 
-// enCrypto & deCrypto String without CryptoKey
-let AC2=new ModCrypto();// console.warn wrong key
-var beforStr2 = AC2.enCryptoStr("hello world!"); //crypto won't be working
-var afterStr2 = AC2.deCryptoStr(beforStr2)
-console.log(beforStr2,afterStr2);// "hello world!","hello world!"
+ModCookie.setItem("name",name);
+ModCookie.setItem("age",age,1);
+ModCookie.setItem("hoppy",hoppy);
 
-// enCrypto & deCrypto Object with CryptoKey
-let AC3=new ModCrypto('SDRd!@#Areqd1234');
-var beforStr3 = AC3.enCryptoDataToStr({name:"mod"});
-var afterStr3 = AC3.deCryptoStrToData(beforStr3)
-console.log(beforStr3,afterStr3);
+setTimeout(function(){
+    console.log(ModCookie.getItem("age"));//undefined
+    console.log(ModCookie.getItem("name"));//mod
+    ModCookie.removeItem("name");
+    console.log(ModCookie.getItem("name"));//undefined
+    ModCookie.clear();
+    console.log(ModCookie.getItem("hoppy"));//undefined
+},2000)
+
+console.log(ModCookie.getItem("name"));//"mod"
+console.log(ModCookie.getItem("age"));//18
+console.log(ModCookie.getItem("hoppy"));//['a','b','c']
 ```
 
 -------
 
 #### API
 
-##### new ModCrypto(CryptoKey); </br>
-###### CryptoKey : </br>
-expect String 16 length,only English number or letter characters. if setup with wrong value, crypto will not working!
+##### [instance].setItem(key,value,expireTime); </br>
+###### key : /required</br>
+###### value :  /required</br>
+###### expireTime : /seconds</br>
+save the key value to cookie with expireTime,if do not set expireTime, The key value will never expired!
 
 ---
-##### [instance].enCryptoStr(string); </br>
+##### [instance].getItem(key); </br>
 ###### string : </br>
-enCrypto String message
+get the value from cookie by the key, if the value of key is not set yet or expired will return undefinded!
 
 ---
-##### [instance].dnCryptoStr(CryptedString); </br>
+##### [instance].removeItem(key); </br>
 ###### CryptedString : </br>
-dnCrypto CryptedString message
+clear the value of cookie by key
 
 ---
-##### [instance].enCryptoDataToStr(string); </br>
+##### [instance].clear(); </br>
 ###### string : </br>
-enCrypto [Object Array Boolean]  message ,return CryptedString
+clear all value of cookie
 
 ---
-##### [instance].deCryptoStrToData(CryptedString); </br>
-###### CryptedString : </br>
-input CryptedString return dnCrypto [Object Array Boolean] message</br>
-but if message can't deCrypto as [Object Array Boolean]
-</br> return null
-
-```
-import ModCrypto from "mod-crypto"
-
-let AC3=new ModCrypto('SDRd!@#Areqd1234');
-var beforStr3 = AC3.enCryptoDataToStr({name:"mod"});
-var afterStr3 = AC3.deCryptoStrToData(beforStr3)
-
-console.log(beforStr3,afterStr3); // 6552505ff6965eeee2e9e0dd3342 , {name:"mod"}
-
-var beforStr4 = AC3.enCryptoDataToStr("hello world!");
-var afterStr4 = AC3.deCryptoStrToData(beforStr3)
-
-console.log(beforStr4,afterStr4); // 3c185b52f79c5ca3aff6e3dd301d , null
-```

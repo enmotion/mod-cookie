@@ -1,4 +1,4 @@
-function setItem(namespace, data, seconds) {
+function setItem(key, data, seconds) {
     let exp = null;
     let expires = "";
     if (seconds) {
@@ -7,9 +7,9 @@ function setItem(namespace, data, seconds) {
         expires = ";expires=" + exp;
     }
     let str = JSON.stringify([data])
-    document.cookie = namespace + "=" + escape(str) + expires;
+    document.cookie = key + "=" + escape(str) + expires;
 }
-function getItem(namespace) {
+function getItem(key) {
     let cookie = document.cookie
     cookie = cookie.split(';').map(function (value) {
         return value.trim()
@@ -18,11 +18,11 @@ function getItem(namespace) {
         obj[item.slice(0, index)] = item.slice(index + 1);
         return obj
     }, {});    
-    if (namespace){
-        if(cookie[namespace]){
-            return JSON.parse(unescape(cookie[namespace]))[0] || '';
+    if (key){
+        if(cookie[key]){
+            return JSON.parse(unescape(cookie[key]))[0] || '';
         }else{
-            return cookie[namespace]
+            return cookie[key]
         }        
     } 
     for(var i in cookie){
@@ -35,8 +35,8 @@ function getItem(namespace) {
     }
     return cookie || ''
 }
-function removeItem(namespace){
-    setItem(namespace,'',-1)
+function removeItem(key){
+    setItem(key,'',-1)
 }
 function clear(){
     var data = getItem()
