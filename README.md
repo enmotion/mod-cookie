@@ -1,6 +1,5 @@
-# mod-crypto
-JavaScript library of aes crypto standards. runing in browser and server
-width mini size.
+# mod-cookie
+JavaScript library of cookie.
 ---
 
 ### Node.js (install)
@@ -9,7 +8,7 @@ Requirements: </br>
  Node.js  </br>
  npm
 ```
-npm install --save mod-crypto
+npm install --save mod-cookie
 ```
 ---
 #### Usage

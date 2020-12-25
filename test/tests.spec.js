@@ -1,58 +1,85 @@
-import Mcrypto from "../src"
+import ModCookie from "../src"
 var assert = require ('assert');
 
-describe('mod-crypto 测试',function(){    
-    describe("创建实例 new",function(){
-        it("入参key 缺失,返回对象 hasCryptoKey == false",function(){            
-            var C = new Mcrypto()
-            assert.equal(C.hasCryptoKey,false)
+describe('mod-cookie 测试',function(){    
+    describe("存储取值测试",function(){
+        it("数组存储测试",function(){
+            var setValue = ['cai']      
+            ModCookie.setItem("test",setValue)
+            var getValue = ModCookie.getItem("test")
+            assert.deepEqual(getValue,setValue)
         })
-        it("入参key:'qwerasdf1234' 位数错误,返回对象 hasCryptoKey == false",function(){
-            var C = new Mcrypto("qwerasdf1234")
-            assert.equal(C.hasCryptoKey,false)
+        it("数值存储测试",function(){
+            var setValue = 2      
+            ModCookie.setItem("test",setValue)
+            var getValue = ModCookie.getItem("test")
+            assert.deepEqual(getValue,setValue)
         })
-        it("入参key:'qwerasdfzxc你!@#$' 携带中文错误,返回对象 hasCryptoKey == false",function(){
-            var C = new Mcrypto("qwerasdfzxc你!@#$")
-            assert.equal(C.hasCryptoKey,false)
-        }) 
-        it("入参key:'qwerasdfzxcv!@#$' 正确,返回对象 hasCryptoKey == true",function(){
-            var C = new Mcrypto("qwerasdfzxcv!@#$")
-            assert.equal(C.hasCryptoKey,true)
-        })        
+        it("布尔存储测试",function(){
+            var setValue = true     
+            ModCookie.setItem("test",setValue)
+            var getValue = ModCookie.getItem("test")
+            assert.deepEqual(getValue,setValue)
+        })
+        it("对象存储测试",function(){
+            var setValue = {name:"mod"}     
+            ModCookie.setItem("test",setValue)
+            var getValue = ModCookie.getItem("test")
+            assert.deepEqual(getValue,setValue)
+        })
+        it("字符存储测试",function(){
+            var setValue = "hello world"     
+            ModCookie.setItem("test",setValue)
+            var getValue = ModCookie.getItem("test")
+            assert.deepEqual(getValue,setValue)
+        })
+        it("空值取值测试",function(){
+            var getValue = ModCookie.getItem("test2")
+            assert.deepEqual(getValue,undefined)
+        })
     })
-    describe("字符加解密",function(){
-        it("加密KEY错误，加密无效，原字符 'mod enmotion', orgStr == crpStr",function(){            
-            var C = new Mcrypto()
-            var orgStr = "mod enmotion"
-            var crpStr = C.deCryptoStr(C.enCryptoStr(orgStr));
-            assert.equal(crpStr,orgStr)
+    describe("清除测试",function(){
+        it("过期前取值测试",function(done){            
+            var setValue = "hello world"     
+            ModCookie.setItem("test",setValue,1)
+            setTimeout(function(){
+                runDelay(done,function(){
+                    var getValue = ModCookie.getItem("test")
+                    assert.equal(getValue,setValue)
+                })
+            },100)
         })
-        it("加解密 'hello world 2222', orgStr == crpStr",function(){            
-            var C = new Mcrypto("qwerasdfzxcv!@#$")
-            var orgStr = "hello world 2222"
-            var crpStr = C.deCryptoStr(C.enCryptoStr(orgStr));
-            assert.equal(orgStr,crpStr)
-        })          
-    })    
-    describe("对象 加解密",function(){
-        it("加解密 非对象 'jhe' ,返回对象 result == null",function(){            
-            var C = new Mcrypto("qwerasdfzxcv!@#$")
-            var target="jhe"
-            var result = C.deCryptoStrToData(C.enCryptoDataToStr(target));
-            assert.deepEqual(result,null)
+        it("过期后取值测试",function(done){            
+            var setValue = "hello world"     
+            ModCookie.setItem("test",setValue,1)
+            setTimeout(function(){
+                runDelay(done,function(){
+                    var getValue = ModCookie.getItem("test")
+                    assert.equal(getValue,undefined)
+                })
+            },1000*2)
         })
-        it("加解密 Obejct ,返回对象 target == result",function(){            
-            var C = new Mcrypto("qwerasdfzxcv!@#$")
-            var target = {name:"mod",hoppy:["swiming"]}
-            var result = C.deCryptoStrToData(C.enCryptoDataToStr(target));
-            assert.deepEqual(target,result)
+        it("清除命令remove",function(){            
+            var setValue = "hello world"     
+            ModCookie.setItem("test",setValue)            
+            ModCookie.removeItem('test');
+            var getValue = ModCookie.getItem("test")
+            assert.equal(getValue,undefined)            
         })
-        it("加密与解密密钥不同 Obejct ,返回对象 target != result",function(){            
-            var C = new Mcrypto("qwerasdfzxcv!@#$")
-            var D = new Mcrypto("qwerasdfzxcv!@#w")
-            var target = {name:"mod",hoppy:["swiming"]}
-            var result = D.deCryptoStrToData(C.enCryptoDataToStr(target));
-            assert.notDeepEqual(target,result)
-        })            
+        it("清除命令clear",function(){            
+            var setValue = "hello world"     
+            ModCookie.setItem("test",setValue)            
+            ModCookie.clear();
+            var getValue = ModCookie.getItem("test")
+            assert.equal(getValue,undefined)            
+        })
     })
 })
+function runDelay(done, f ) {
+    try {
+        f();
+        done();
+    } catch(e) {
+        done(e);
+    }
+}
