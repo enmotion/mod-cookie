@@ -29,8 +29,8 @@ function getItem(key) {
         try{
             cookie[i] = JSON.parse(unescape(cookie[i]))
             cookie[i] = cookie[i].constructor == Array ? cookie[i][0] : cookie[i]
-        }catch{
-            
+        }catch(e){
+            console.log(e)
         }        
     }
     return cookie || ''
